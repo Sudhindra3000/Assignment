@@ -48,7 +48,7 @@ class JarRepositoryImpl(
                     id = dbItem.id,
                     name = dbItem.name,
                 )
-            }
+            }.distinctBy { it.id }
             emit(dbList)
         }
     }

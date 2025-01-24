@@ -2,6 +2,7 @@ package com.myjar.jarassignment.ui.composables
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -59,45 +61,55 @@ fun ItemListScreen(
 ) {
     val items = viewModel.listStringData.collectAsState().value
     val query by viewModel.query.collectAsState()
+    val isConnected by viewModel.isConnected.collectAsState()
 
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        stickyHeader {
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = query,
-                onValueChange = viewModel::setQuery,
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Rounded.Search,
-                        contentDescription = "Search Icon",
-                    )
-                },
-                shape = CircleShape,
-                placeholder = {
-                    Text(
-                        text = "Search",
-                    )
-                },
-                singleLine = true,
-            )
-        }
-        items(
-            items,
-            key = { item ->
-                item.id
+    Box {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+            stickyHeader {
+                OutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = query,
+                    onValueChange = viewModel::setQuery,
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Rounded.Search,
+                            contentDescription = "Search Icon",
+                        )
+                    },
+                    shape = CircleShape,
+                    placeholder = {
+                        Text(
+                            text = "Search",
+                        )
+                    },
+                    singleLine = true,
+                )
             }
-        ) { item ->
-            ItemCard(
-                Modifier.animateItem(),
-                item = item,
-                onClick = { onNavigateToDetail(item.id) }
-            )
-            Spacer(modifier = Modifier.height(8.dp))
+            items(
+                items,
+                key = { item ->
+                    item.id
+                }
+            ) { item ->
+                ItemCard(
+                    Modifier.animateItem(),
+                    item = item,
+                    onClick = { onNavigateToDetail(item.id) }
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+            }
         }
+        if (!isConnected)
+            Text(
+                modifier = Modifier
+                    .padding(bottom = 12.dp)
+                    .align(Alignment.BottomCenter),
+                text = "You are offline",
+            )
     }
 }
 

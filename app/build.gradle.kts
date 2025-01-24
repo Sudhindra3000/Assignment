@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("io.realm.kotlin")
 }
 
 android {
@@ -69,5 +70,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation (libs.retrofit)
     implementation (libs.retrofit.gson.convertor)
-
+    implementation("io.realm.kotlin:library-base:1.16.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.0")
 }

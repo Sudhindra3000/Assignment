@@ -16,7 +16,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -57,7 +56,7 @@ fun ItemListScreen(
     navigate: MutableState<String>,
     navController: NavHostController
 ) {
-    val items = viewModel.listStringData.collectAsState()
+    val items = viewModel.listStringData.collectAsState().value
 
     if (navigate.value.isNotBlank()) {
         val currRoute = navController.currentDestination?.route.orEmpty()
@@ -70,7 +69,7 @@ fun ItemListScreen(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        items(items.value) { item ->
+        items(items) { item ->
             ItemCard(
                 item = item,
                 onClick = { onNavigateToDetail(item.id) }
@@ -88,7 +87,7 @@ fun ItemCard(item: ComputerItem, onClick: () -> Unit) {
             .padding(8.dp)
             .clickable { onClick() }
     ) {
-        Text(text = item.name, fontWeight = FontWeight.Bold, color = Color.Transparent)
+        Text(text = item.name, fontWeight = FontWeight.Bold)
     }
 }
 

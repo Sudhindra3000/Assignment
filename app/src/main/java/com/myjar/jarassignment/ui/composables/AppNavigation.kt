@@ -85,8 +85,14 @@ fun ItemListScreen(
                 singleLine = true,
             )
         }
-        items(items) { item ->
+        items(
+            items,
+            key = { item ->
+                item.id
+            }
+        ) { item ->
             ItemCard(
+                Modifier.animateItem(),
                 item = item,
                 onClick = { onNavigateToDetail(item.id) }
             )
@@ -96,9 +102,13 @@ fun ItemListScreen(
 }
 
 @Composable
-fun ItemCard(item: ComputerItem, onClick: () -> Unit) {
+fun ItemCard(
+    modifier: Modifier = Modifier,
+    item: ComputerItem,
+    onClick: () -> Unit
+) {
     Column(
-        modifier = Modifier
+        modifier
             .fillMaxWidth()
             .padding(8.dp)
             .clickable { onClick() }

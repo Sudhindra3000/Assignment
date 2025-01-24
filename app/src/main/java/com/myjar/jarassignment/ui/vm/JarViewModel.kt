@@ -2,14 +2,16 @@ package com.myjar.jarassignment.ui.vm
 
 import android.content.Context
 import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.net.NetworkRequest
 import android.os.Build
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.myjar.jarassignment.utils.createRealm
-import com.myjar.jarassignment.utils.createRetrofit
 import com.myjar.jarassignment.data.model.ComputerItem
 import com.myjar.jarassignment.data.repository.JarRepository
 import com.myjar.jarassignment.data.repository.JarRepositoryImpl
+import com.myjar.jarassignment.utils.createRealm
+import com.myjar.jarassignment.utils.createRetrofit
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -29,18 +31,24 @@ class JarViewModel : ViewModel() {
     fun init(context: Context) {
         connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkCallback = object : ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: android.net.Network) {
+                _isConnected.value = true
+            }
+
+            override fun onLost(network: android.net.Network) {
+                _isConnected.value = false
+            }
+        }
         // Observe network connectivity changes
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            connectivityManager.registerDefaultNetworkCallback(object :
-                ConnectivityManager.NetworkCallback() {
-                override fun onAvailable(network: android.net.Network) {
-                    _isConnected.value = true
-                }
-
-                override fun onLost(network: android.net.Network) {
-                    _isConnected.value = false
-                }
-            })
+            connectivityManager.registerDefaultNetworkCallback(networkCallback)
+        } else {
+            val request = NetworkRequest
+                .Builder()
+                .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                .build()
+            connectivityManager.registerNetworkCallback(request, networkCallback)
         }
     }
 

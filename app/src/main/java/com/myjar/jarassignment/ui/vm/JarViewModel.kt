@@ -5,14 +5,11 @@ import android.net.ConnectivityManager
 import android.os.Build
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.myjar.jarassignment.createRealm
 import com.myjar.jarassignment.createRetrofit
 import com.myjar.jarassignment.data.model.ComputerItem
-import com.myjar.jarassignment.data.model.db.DbComputerItem
-import com.myjar.jarassignment.data.model.db.DbItemData
 import com.myjar.jarassignment.data.repository.JarRepository
 import com.myjar.jarassignment.data.repository.JarRepositoryImpl
-import io.realm.kotlin.Realm
-import io.realm.kotlin.RealmConfiguration
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -66,18 +63,7 @@ class JarViewModel : ViewModel() {
 
     private val repository: JarRepository = JarRepositoryImpl(
         createRetrofit(),
-        Realm.open(
-            RealmConfiguration
-                .Builder(
-                    schema = setOf(
-                        DbComputerItem::class,
-                        DbItemData::class
-                    ),
-                )
-                .schemaVersion(2)
-                .deleteRealmIfMigrationNeeded()
-                .build()
-        )
+        createRealm()
     )
 
     fun fetchData() {

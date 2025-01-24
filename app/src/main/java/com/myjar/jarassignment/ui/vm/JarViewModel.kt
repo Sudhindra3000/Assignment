@@ -8,10 +8,18 @@ import com.myjar.jarassignment.data.repository.JarRepository
 import com.myjar.jarassignment.data.repository.JarRepositoryImpl
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.launch
 
 class JarViewModel : ViewModel() {
+
+    private val _query = MutableStateFlow("")
+    val query = _query.asStateFlow()
+
+    fun setQuery(value: String) {
+        _query.value = value
+    }
 
     private val _listStringData = MutableStateFlow<List<ComputerItem>>(emptyList())
     val listStringData: StateFlow<List<ComputerItem>>

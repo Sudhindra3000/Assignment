@@ -1,4 +1,4 @@
-package com.myjar.jarassignment
+package com.myjar.jarassignment.utils
 
 import com.myjar.jarassignment.data.model.db.DbComputerItem
 import com.myjar.jarassignment.data.model.db.DbItemData

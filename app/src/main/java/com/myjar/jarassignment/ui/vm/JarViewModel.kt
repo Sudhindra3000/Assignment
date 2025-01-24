@@ -5,8 +5,8 @@ import android.net.ConnectivityManager
 import android.os.Build
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.myjar.jarassignment.createRealm
-import com.myjar.jarassignment.createRetrofit
+import com.myjar.jarassignment.utils.createRealm
+import com.myjar.jarassignment.utils.createRetrofit
 import com.myjar.jarassignment.data.model.ComputerItem
 import com.myjar.jarassignment.data.repository.JarRepository
 import com.myjar.jarassignment.data.repository.JarRepositoryImpl

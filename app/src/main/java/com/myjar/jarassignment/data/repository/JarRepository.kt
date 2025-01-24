@@ -3,10 +3,10 @@ package com.myjar.jarassignment.data.repository
 import android.util.Log
 import com.myjar.jarassignment.data.api.ApiService
 import com.myjar.jarassignment.data.model.ComputerItem
-import com.myjar.jarassignment.data.model.ItemData
 import com.myjar.jarassignment.data.model.db.DbComputerItem
 import com.myjar.jarassignment.data.model.db.DbItemData
 import io.realm.kotlin.Realm
+import io.realm.kotlin.UpdatePolicy
 import io.realm.kotlin.ext.query
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -37,7 +37,8 @@ class JarRepositoryImpl(
                                     color = apiItem.data.color ?: ""
                                     capacity = apiItem.data.capacity ?: ""
                                 }
-                        }
+                        },
+                        updatePolicy = UpdatePolicy.ALL,
                     )
                 }
             }
@@ -48,7 +49,7 @@ class JarRepositoryImpl(
                     id = dbItem.id,
                     name = dbItem.name,
                 )
-            }.distinctBy { it.id }
+            }
             emit(dbList)
         }
     }

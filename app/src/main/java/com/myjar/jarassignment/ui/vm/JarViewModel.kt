@@ -67,12 +67,16 @@ class JarViewModel : ViewModel() {
     private val repository: JarRepository = JarRepositoryImpl(
         createRetrofit(),
         Realm.open(
-            RealmConfiguration.create(
-                schema = setOf(
-                    DbComputerItem::class,
-                    DbItemData::class
+            RealmConfiguration
+                .Builder(
+                    schema = setOf(
+                        DbComputerItem::class,
+                        DbItemData::class
+                    ),
                 )
-            )
+                .schemaVersion(2)
+                .deleteRealmIfMigrationNeeded()
+                .build()
         )
     )
 

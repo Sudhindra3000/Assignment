@@ -1,5 +1,8 @@
 package com.myjar.jarassignment.ui.vm
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.os.Build
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.myjar.jarassignment.createRetrofit
@@ -21,6 +24,29 @@ import kotlinx.coroutines.launch
 
 class JarViewModel : ViewModel() {
 
+    private lateinit var connectivityManager: ConnectivityManager
+
+    private val _isConnected = MutableStateFlow(false)
+    val isConnected = _isConnected.asStateFlow()
+
+    fun init(context: Context) {
+        connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        // Observe network connectivity changes
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            connectivityManager.registerDefaultNetworkCallback(object :
+                ConnectivityManager.NetworkCallback() {
+                override fun onAvailable(network: android.net.Network) {
+                    _isConnected.value = true
+                }
+
+                override fun onLost(network: android.net.Network) {
+                    _isConnected.value = false
+                }
+            })
+        }
+    }
+
     private val _query = MutableStateFlow("")
     val query = _query.asStateFlow()
 
@@ -40,7 +66,14 @@ class JarViewModel : ViewModel() {
 
     private val repository: JarRepository = JarRepositoryImpl(
         createRetrofit(),
-        Realm.open(RealmConfiguration.create(schema = setOf(DbComputerItem::class, DbItemData::class)))
+        Realm.open(
+            RealmConfiguration.create(
+                schema = setOf(
+                    DbComputerItem::class,
+                    DbItemData::class
+                )
+            )
+        )
     )
 
     fun fetchData() {
